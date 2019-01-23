@@ -9,9 +9,9 @@ using System.Windows.Input;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
+using ScreenToGif.Model;
 using ScreenToGif.Util;
 using ScreenToGif.Util.ActivityHook;
-using ScreenToGif.Util.Model;
 using ScreenToGif.Webcam.DirectX;
 using ScreenToGif.Windows.Other;
 using Timer = System.Windows.Forms.Timer;
@@ -406,7 +406,7 @@ namespace ScreenToGif.Windows
 
         private void Normal_Elapsed(object sender, EventArgs e)
         {
-            string fileName = $"{Project.FullPath}{_frameCount}.png";
+            var fileName = $"{Project.FullPath}{_frameCount}.png";
             Project.Frames.Add(new FrameInfo(fileName, _timer.Interval));
 
             //Get the actual position of the form.
@@ -453,7 +453,7 @@ namespace ScreenToGif.Windows
 
                 _timer = new Timer { Interval = 1000 / FpsNumericUpDown.Value };
 
-                Project = new ProjectInfo().CreateProjectFolder();
+                Project = new ProjectInfo().CreateProjectFolder(ProjectByType.WebcamRecorder);
 
                 RefreshButton.IsEnabled = false;
                 VideoDevicesComboBox.IsEnabled = false;

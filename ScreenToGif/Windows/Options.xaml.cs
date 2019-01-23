@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -10,10 +12,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Navigation;
 using ScreenToGif.Cloud.Imgur;
 using ScreenToGif.Controls;
+using ScreenToGif.Model;
 using ScreenToGif.Util;
 using ScreenToGif.Windows.Other;
 using Application = System.Windows.Application;
@@ -27,7 +31,7 @@ using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 
 namespace ScreenToGif.Windows
 {
-    public partial class Options : Window
+    public partial class Options : Window, INotification
     {
         #region Variables
 
@@ -41,6 +45,11 @@ namespace ScreenToGif.Windows
         /// </summary>
         private int _fileCount;
 
+        /// <summary>
+        /// .
+        /// </summary>
+        private ObservableCollection<DefaultTaskModel> _effectList;
+
         #endregion
 
         public Options()
@@ -48,36 +57,18 @@ namespace ScreenToGif.Windows
             InitializeComponent();
 
 #if UWP
-                PaypalLabel.Visibility = Visibility.Collapsed;
+                //PaypalLabel.Visibility = Visibility.Collapsed;
+                UpdatesCheckBox.Visibility = Visibility.Collapsed;
+                StoreTextBlock.Visibility = Visibility.Visible;
 #endif
         }
 
-        public Options(int index)
+        public Options(int index) : this()
         {
-            InitializeComponent();
-
-            if (index > -1 && index < OptionsStackPanel.Children.Count - 1)
-            {
-                if (OptionsStackPanel.Children[index] is RadioButton radio)
-                    radio.IsChecked = true;
-            }
-
-#if UWP
-                PaypalLabel.Visibility = Visibility.Collapsed;
-#endif
+            SelectTab(index);
         }
 
         #region App Settings
-
-        private void ClickColorButton_Click(object sender, RoutedEventArgs e)
-        {
-            var colorDialog = new ColorSelector(UserSettings.All.ClickColor) { Owner = this };
-
-            var result = colorDialog.ShowDialog();
-
-            if (result.HasValue && result.Value)
-                UserSettings.All.ClickColor = colorDialog.SelectedColor;
-        }
 
         private void NotificationIconCheckBox_CheckedChanged(object sender, RoutedEventArgs e)
         {
@@ -625,6 +616,138 @@ namespace ScreenToGif.Windows
 
         #endregion
 
+        #region Automated Tasks
+
+        private void TasksPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            var list = UserSettings.All.AutomatedTasksList?.Cast<DefaultTaskModel>().ToList() ?? new List<DefaultTaskModel>();
+
+            TasksDataGrid.ItemsSource = _effectList = new ObservableCollection<DefaultTaskModel>(list);
+        }
+
+        private void MoveUp_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = DefaultsPanel.IsVisible && TasksDataGrid.SelectedIndex > 0;
+        }
+
+        private void MoveDown_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = DefaultsPanel.IsVisible && TasksDataGrid.SelectedIndex < TasksDataGrid.Items.Count - 1;
+        }
+
+        private void Remove_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = DefaultsPanel.IsVisible && TasksDataGrid.SelectedIndex != -1;
+        }
+
+        private void Add_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = DefaultsPanel.IsVisible;
+        }
+
+        private void MoveUp_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var selectedIndex = TasksDataGrid.SelectedIndex;
+            var selected = _effectList[selectedIndex];
+
+            _effectList.RemoveAt(selectedIndex);
+            _effectList.Insert(selectedIndex - 1, selected);
+            TasksDataGrid.SelectedItem = selected;
+
+            UserSettings.All.AutomatedTasksList = new ArrayList(_effectList.ToArray());
+        }
+
+        private void MoveDown_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var selectedIndex = TasksDataGrid.SelectedIndex;
+            var selected = _effectList[selectedIndex];
+
+            _effectList.RemoveAt(selectedIndex);
+            _effectList.Insert(selectedIndex + 1, selected);
+            TasksDataGrid.SelectedItem = selected;
+
+            UserSettings.All.AutomatedTasksList = new ArrayList(_effectList.ToArray());
+        }
+
+        private void Add_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var eff = new AutomatedTask();
+            var result = eff.ShowDialog();
+
+            if (result != true)
+                return;
+
+            _effectList.Add(eff.CurrentTask);
+            UserSettings.All.AutomatedTasksList = new ArrayList(_effectList.ToArray());
+        }
+
+        private void Edit_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var index = TasksDataGrid.SelectedIndex;
+            var selected = _effectList[TasksDataGrid.SelectedIndex].ShallowCopy();
+
+            var eff = new AutomatedTask { CurrentTask = selected, IsEditing = true };
+            var result = eff.ShowDialog();
+
+            if (result != true)
+                return;
+
+            _effectList[TasksDataGrid.SelectedIndex] = eff.CurrentTask;
+            TasksDataGrid.Items.Refresh();
+            TasksDataGrid.SelectedIndex = index;
+
+            UserSettings.All.AutomatedTasksList = new ArrayList(_effectList.ToArray());
+        }
+
+        private void Remove_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var index = TasksDataGrid.SelectedIndex;
+            _effectList.RemoveAt(TasksDataGrid.SelectedIndex);
+
+            //Automatically selects the closest item from the position of the one that was removed.
+            TasksDataGrid.SelectedIndex = _effectList.Count == 0 ? -1 : _effectList.Count <= index ? _effectList.Count - 1 : index;
+
+            UserSettings.All.AutomatedTasksList = new ArrayList(_effectList.ToArray());
+        }
+
+        private void TasksDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (EditCommandBinding.Command.CanExecute(sender))
+                EditCommandBinding.Command.Execute(sender);
+        }
+
+        private void TasksDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && EditCommandBinding.Command.CanExecute(sender))
+            {
+                EditCommandBinding.Command.Execute(sender);
+                e.Handled = true;
+            }
+
+            //if (e.Key == Key.Space)
+            //{
+            //    var selected = TasksDataGrid.SelectedItem as DefaultTaskModel;
+
+            //    if (selected != null)
+            //    {
+            //        selected.CanUndo = !selected.CanUndo;
+            //        e.Handled = true;
+
+            //        UserSettings.All.AutomatedTasksList = new ArrayList(_effectList.ToArray());
+            //    }
+            //}
+        }
+
+        private void ExtendedCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded)
+                return;
+
+            UserSettings.All.AutomatedTasksList = new ArrayList(_effectList.ToArray());
+        }
+
+        #endregion
+
         #region Shortcuts
 
         private void ShortcutsPanel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -679,7 +802,8 @@ namespace ScreenToGif.Windows
 
         private void LanguagePanel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!IsLoaded) return;
+            //To avoid being called during startup of the window and to avoid being called twice after selection changes.
+            if (!IsLoaded || e.AddedItems.Count == 0) return;
 
             try
             {
@@ -687,7 +811,7 @@ namespace ScreenToGif.Windows
             }
             catch (Exception ex)
             {
-                ErrorDialog.Ok(FindResource("Title.Options") as string, "Error while stopping", ex.Message, ex);
+                ErrorDialog.Ok(LocalizationHelper.Get("Title.Options"), "Error while stopping", ex.Message, ex);
                 LogWriter.Log(ex, "Error while trying to set the language.");
             }
         }
@@ -753,7 +877,7 @@ namespace ScreenToGif.Windows
             _tempDel = CheckTemp;
             _tempDel.BeginInvoke(e, CheckTempCallBack, null);
 
-            CheckDiskSpace();
+            NotificationUpdated();
 
             #region Settings
 
@@ -840,42 +964,36 @@ namespace ScreenToGif.Windows
                 if (!Directory.Exists(path))
                 {
                     _folderList.Clear();
-                    TempSeparator.TextRight = this.TextResource("TempFiles.FilesAndFolders.None");
+                    TempSeparator.TextRight = LocalizationHelper.Get("TempFiles.FilesAndFolders.None");
                     return;
                 }
 
-                #region Update the Information
-
-                //Directory.GetDirectories(Path.Combine(UserSettings.All.TemporaryFolder, "ScreenToGif", "Recording")).Select(s => new DirectoryInfo(s)).Where(w => (DateTime.Now - w.CreationTime).Days > 5).ToList();
                 _folderList = await Task.Factory.StartNew(() => Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly).Select(x => new DirectoryInfo(x)).ToList());
 
-                #endregion
-
-                if (Dialog.Ask("ScreenToGif", FindResource("TempFiles.KeepRecent") as string, FindResource("TempFiles.KeepRecent.Info") as string))
+                if (Dialog.Ask("ScreenToGif", LocalizationHelper.Get("TempFiles.KeepRecent"), LocalizationHelper.Get("TempFiles.KeepRecent.Info")))
                     _folderList = await Task.Factory.StartNew(() => _folderList.Where(w => (DateTime.Now - w.CreationTime).Days > (UserSettings.All.AutomaticCleanUpDays > 0 ? UserSettings.All.AutomaticCleanUpDays : 5)).ToList());
 
                 foreach (var folder in _folderList)
                 {
-                    //var project = Path.Combine(folder.FullName, "Project.json");
-
-                    //if (File.Exists(project) && (new FileInfo(project).LastWriteTime - DateTime.Now).Days < 5)
-                    //    continue;
+                    if (MutexList.IsInUse(folder.Name))
+                        continue;
 
                     Directory.Delete(folder.FullName, true);
                 }
 
-                #region Update the Information
-
-                _folderList = Directory.GetDirectories(path).Select(x => new DirectoryInfo(x)).ToList();
-
-                #endregion
+                _folderList = await Task.Factory.StartNew(() => Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly).Select(x => new DirectoryInfo(x)).ToList());
             }
             catch (Exception ex)
             {
                 LogWriter.Log(ex, "Error while cleaning the Temp folder");
             }
+            finally
+            {
+                App.MainViewModel.CheckDiskSpace();
+            }
 
-            TempSeparator.TextRight = string.Format(this.TextResource("TempFiles.FilesAndFolders.Count"), _folderList.Count.ToString("##,##0"), _folderList.Sum(folder => Directory.EnumerateFiles(folder.FullName).Count()).ToString("##,##0"));
+            TempSeparator.TextRight = string.Format(LocalizationHelper.Get("TempFiles.FilesAndFolders.Count", "{0} folders and {1} files"), _folderList.Count.ToString("##,##0"),
+                _folderList.Sum(folder => Directory.EnumerateFiles(folder.FullName).Count()).ToString("##,##0"));
 
             ClearTempButton.IsEnabled = _folderList.Any();
         }
@@ -975,21 +1093,6 @@ namespace ScreenToGif.Windows
             }
         }
 
-        private void CheckDiskSpace()
-        {
-            if (string.IsNullOrWhiteSpace(UserSettings.All.TemporaryFolder))
-            {
-                LowSpaceTextBlock.Visibility = Visibility.Collapsed;
-                return;
-            }
-
-            var drive = new DriveInfo(UserSettings.All.TemporaryFolder.Substring(0, 1));
-            //var spaceLeft = drive.AvailableFreeSpace > 0 ? drive.AvailableFreeSpace * 100d / (double)drive.TotalSize : 100; //Get the percentage of usage.
-
-            //If there's less than 2GB left.           
-            LowSpaceTextBlock.Visibility = drive.AvailableFreeSpace < 2000000000 ? Visibility.Visible : Visibility.Collapsed;
-        }
-
         #region Async
 
         private delegate void TempDelegate(DependencyPropertyChangedEventArgs e);
@@ -1019,9 +1122,9 @@ namespace ScreenToGif.Windows
 
                 Dispatcher.Invoke(() =>
                 {
-                    CheckDiskSpace();
+                    App.MainViewModel.CheckDiskSpace();
 
-                    TempSeparator.TextRight = string.Format(this.TextResource("TempFiles.FilesAndFolders.Count"), _folderList.Count.ToString("##,##0"), _fileCount.ToString("##,##0"));
+                    TempSeparator.TextRight = string.Format(LocalizationHelper.Get("TempFiles.FilesAndFolders.Count", "{0} folders and {1} files"), _folderList.Count.ToString("##,##0"), _fileCount.ToString("##,##0"));
 
                     ClearTempButton.IsEnabled = _folderList.Any();
                 });
@@ -1188,6 +1291,10 @@ namespace ScreenToGif.Windows
                 return;
             }
 
+#if UWP
+            StatusBand.Warning(LocalizationHelper.Get("S.Extras.DownloadRestriction"));
+            return;
+#else
             #region Save as
 
             var output = UserSettings.All.FfmpegLocation ?? "";
@@ -1235,7 +1342,7 @@ namespace ScreenToGif.Windows
             ExtrasGrid.IsEnabled = false;
             Cursor = Cursors.AppStarting;
             FfmpegImageCard.Status = ExtrasStatus.Processing;
-            FfmpegImageCard.Description = FindResource("Extras.Downloading") as string;
+            FfmpegImageCard.Description = LocalizationHelper.Get("Extras.Downloading");
 
             try
             {
@@ -1268,6 +1375,7 @@ namespace ScreenToGif.Windows
             }
 
             #endregion
+#endif
         }
 
         private async void GifskiImageCard_Click(object sender, RoutedEventArgs e)
@@ -1280,6 +1388,10 @@ namespace ScreenToGif.Windows
                 return;
             }
 
+#if UWP
+            StatusBand.Warning(LocalizationHelper.Get("S.Extras.DownloadRestriction"));
+            return;
+#else
             #region Save as
 
             var output = UserSettings.All.GifskiLocation ?? "";
@@ -1327,7 +1439,7 @@ namespace ScreenToGif.Windows
             ExtrasGrid.IsEnabled = false;
             Cursor = Cursors.AppStarting;
             GifskiImageCard.Status = ExtrasStatus.Processing;
-            GifskiImageCard.Description = FindResource("Extras.Downloading") as string;
+            GifskiImageCard.Description = LocalizationHelper.Get("Extras.Downloading");
 
             try
             {
@@ -1361,6 +1473,7 @@ namespace ScreenToGif.Windows
             }
 
             #endregion
+#endif
         }
 
         private void LocationTextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
@@ -1379,14 +1492,19 @@ namespace ScreenToGif.Windows
             var isRelative = !string.IsNullOrWhiteSpace(output) && !Path.IsPathRooted(output);
             var notAlt = !string.IsNullOrWhiteSpace(output) && (UserSettings.All.FfmpegLocation ?? "").Contains(Path.DirectorySeparatorChar);
 
+            //Gets the current directory folder, where the file is located. If empty, it means that the path is relative.
             var directory = !string.IsNullOrWhiteSpace(output) ? Path.GetDirectoryName(output) : "";
+
+            if (!string.IsNullOrWhiteSpace(output) && string.IsNullOrWhiteSpace(directory))
+                directory = AppDomain.CurrentDomain.BaseDirectory;
+
             var initial = Directory.Exists(directory) ? directory : Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
 
             var ofd = new OpenFileDialog
             {
                 FileName = "ffmpeg",
                 Filter = "FFmpeg executable (*.exe)|*.exe", //TODO: Localize.
-                Title = FindResource("Extras.FfmpegLocation.Select") as string,
+                Title = LocalizationHelper.Get("Extras.FfmpegLocation.Select"),
                 InitialDirectory = isRelative ? Path.GetFullPath(initial) : initial,
                 DefaultExt = ".exe"
             };
@@ -1422,14 +1540,19 @@ namespace ScreenToGif.Windows
             var isRelative = !string.IsNullOrWhiteSpace(output) && !Path.IsPathRooted(output);
             var notAlt = !string.IsNullOrWhiteSpace(output) && (UserSettings.All.GifskiLocation ?? "").Contains(Path.DirectorySeparatorChar);
 
+            //Gets the current directory folder, where the file is located. If empty, it means that the path is relative.
             var directory = !string.IsNullOrWhiteSpace(output) ? Path.GetDirectoryName(output) : "";
+
+            if (!string.IsNullOrWhiteSpace(output) && string.IsNullOrWhiteSpace(directory))
+                directory = AppDomain.CurrentDomain.BaseDirectory;
+
             var initial = Directory.Exists(directory) ? directory : Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
 
             var ofd = new OpenFileDialog
             {
                 FileName = "gifski",
                 Filter = "Gifski library (*.dll)|*.dll", //TODO: Localize.
-                Title = FindResource("Extras.GifskiLocation.Select") as string,
+                Title = LocalizationHelper.Get("Extras.GifskiLocation.Select"),
                 InitialDirectory = isRelative ? Path.GetFullPath(initial) : initial,
                 DefaultExt = ".dll"
             };
@@ -1443,7 +1566,7 @@ namespace ScreenToGif.Windows
             //Converts to a relative path again.
             if (isRelative && !string.IsNullOrWhiteSpace(UserSettings.All.GifskiLocation))
             {
-                var selected = new Uri(UserSettings.All.FfmpegLocation);
+                var selected = new Uri(UserSettings.All.GifskiLocation);
                 var baseFolder = new Uri(AppDomain.CurrentDomain.BaseDirectory);
                 var relativeFolder = Uri.UnescapeDataString(baseFolder.MakeRelativeUri(selected).ToString());
 
@@ -1454,6 +1577,18 @@ namespace ScreenToGif.Windows
             CheckTools();
         }
 
+        private void ExtrasHyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            try
+            {
+                Process.Start(e.Uri.AbsoluteUri);
+            }
+            catch (Exception ex)
+            {
+                LogWriter.Log(ex, "Erro while trying to navigate to the license website.");
+            }
+        }
+
         private void CheckTools()
         {
             if (!IsLoaded)
@@ -1461,37 +1596,38 @@ namespace ScreenToGif.Windows
 
             try
             {
-                if (Util.Other.IsFfmpegPresent())
+                if (Util.Other.IsFfmpegPresent(true))
                 {
                     var info = new FileInfo(UserSettings.All.FfmpegLocation);
                     info.Refresh();
 
                     FfmpegImageCard.Status = ExtrasStatus.Ready;
-                    FfmpegImageCard.Description = string.Format(TryFindResource("Extras.Ready") as string ?? "{0}", Humanizer.BytesToString(info.Length));
+                    FfmpegImageCard.Description = string.Format(LocalizationHelper.Get("Extras.Ready", "{0}"), Humanizer.BytesToString(info.Length));
                 }
                 else
                 {
                     FfmpegImageCard.Status = ExtrasStatus.Available;
-                    FfmpegImageCard.Description = string.Format(TryFindResource("Extras.Download") as string ?? "{0}", "~ 43,7 MB");
+                    FfmpegImageCard.Description = string.Format(LocalizationHelper.Get("Extras.Download", "{0}"), "~ 43,7 MB");
                 }
 
-                if (Util.Other.IsGifskiPresent())
+                if (Util.Other.IsGifskiPresent(true))
                 {
                     var info = new FileInfo(UserSettings.All.GifskiLocation);
                     info.Refresh();
 
                     GifskiImageCard.Status = ExtrasStatus.Ready;
-                    GifskiImageCard.Description = string.Format(TryFindResource("Extras.Ready") as string ?? "{0}", Humanizer.BytesToString(info.Length));
+                    GifskiImageCard.Description = string.Format(LocalizationHelper.Get("Extras.Ready", "{0}"), Humanizer.BytesToString(info.Length));
                 }
                 else
                 {
                     GifskiImageCard.Status = ExtrasStatus.Available;
-                    GifskiImageCard.Description = string.Format(TryFindResource("Extras.Download") as string ?? "{0}", "~ 1 MB");
+                    GifskiImageCard.Description = string.Format(LocalizationHelper.Get("Extras.Download", "{0}"), "~ 1 MB");
                 }
             }
             catch (Exception ex)
             {
                 LogWriter.Log(ex, "Checking the existance of external tools.");
+                StatusBand.Error("It was not possible to check the existence of the external tools.");
             }
         }
 
@@ -1509,7 +1645,7 @@ namespace ScreenToGif.Windows
             {
                 LogWriter.Log(ex, "Error • Openning the Donation website");
 
-                ErrorDialog.Ok(FindResource("Title.Options") as string, "Error openning the donation website", ex.Message, ex);
+                ErrorDialog.Ok(LocalizationHelper.Get("Title.Options"), "Error openning the donation website", ex.Message, ex);
             }
         }
 
@@ -1523,7 +1659,7 @@ namespace ScreenToGif.Windows
             {
                 LogWriter.Log(ex, "Error • Openning the Donation website");
 
-                ErrorDialog.Ok(FindResource("Title.Options") as string, "Error openning the donation website", ex.Message, ex);
+                ErrorDialog.Ok(LocalizationHelper.Get("Title.Options"), "Error openning the donation website", ex.Message, ex);
             }
         }
 
@@ -1541,7 +1677,7 @@ namespace ScreenToGif.Windows
             {
                 LogWriter.Log(ex, "Error • Openning the Donation website");
 
-                ErrorDialog.Ok(FindResource("Title.Options") as string, "Error openning the donation website", ex.Message, ex);
+                ErrorDialog.Ok(LocalizationHelper.Get("Title.Options"), "Error openning the donation website", ex.Message, ex);
             }
         }
 
@@ -1555,7 +1691,7 @@ namespace ScreenToGif.Windows
             {
                 LogWriter.Log(ex, "Error • Openning the Patreon website");
 
-                ErrorDialog.Ok(FindResource("Title.Options") as string, "Error openning the patreon website", ex.Message, ex);
+                ErrorDialog.Ok(LocalizationHelper.Get("Title.Options"), "Error openning the patreon website", ex.Message, ex);
             }
         }
 
@@ -1579,7 +1715,7 @@ namespace ScreenToGif.Windows
             {
                 LogWriter.Log(ex, "Error • Openning the Steam website");
 
-                ErrorDialog.Ok(FindResource("Title.Options") as string, "Error openning the steam website", ex.Message, ex);
+                ErrorDialog.Ok(LocalizationHelper.Get("Title.Options"), "Error openning the steam website", ex.Message, ex);
             }
         }
 
@@ -1593,7 +1729,7 @@ namespace ScreenToGif.Windows
             {
                 LogWriter.Log(ex, "Error • Openning the donation website");
 
-                ErrorDialog.Ok(FindResource("Title.Options") as string, "Error openning the donation website", ex.Message, ex);
+                ErrorDialog.Ok(LocalizationHelper.Get("Title.Options"), "Error openning the donation website", ex.Message, ex);
             }
         }
 
@@ -1619,7 +1755,15 @@ namespace ScreenToGif.Windows
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            ProxyPasswordBox.Password = WebHelper.Unprotect(UserSettings.All.ProxyPassword);
+            try
+            {
+                ProxyPasswordBox.Password = WebHelper.Unprotect(UserSettings.All.ProxyPassword);
+            }
+            catch (Exception ex)
+            {
+                StatusBand.Warning("It was not possible to corectly load your proxy password. This usually happens when sharing the app settings with different computers.");
+                LogWriter.Log(ex, "Unprotect data");
+            }
 
             UpdateImgurStatus();
             UpdateAlbumList(true);
@@ -1634,6 +1778,8 @@ namespace ScreenToGif.Windows
         {
             Global.IgnoreHotKeys = false;
 
+            RenderOptions.ProcessRenderMode = UserSettings.All.DisableHardwareAcceleration ? RenderMode.SoftwareOnly : RenderMode.Default;
+
             UserSettings.All.ProxyPassword = WebHelper.Protect(ProxyPasswordBox.Password);
             UserSettings.Save();
         }
@@ -1647,5 +1793,21 @@ namespace ScreenToGif.Windows
         }
 
         #endregion
+
+        public void NotificationUpdated()
+        {
+            if (!string.IsNullOrWhiteSpace(UserSettings.All.TemporaryFolder) && Global.AvailableDiskSpace < 2000000000)
+                LowSpaceTextBlock.Visibility = Visibility.Visible;
+            else
+                LowSpaceTextBlock.Visibility = Visibility.Collapsed;
+        }
+
+        internal void SelectTab(int index)
+        {
+            if (index <= -1 || index >= OptionsStackPanel.Children.Count - 1) return;
+
+            if (OptionsStackPanel.Children[index] is RadioButton radio)
+                radio.IsChecked = true;
+        }
     }
 }

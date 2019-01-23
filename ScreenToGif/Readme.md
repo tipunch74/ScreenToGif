@@ -5,19 +5,19 @@ This is the current project of ScreenToGif.
 _VS 2017 and .Net 4.6.1 or newer required._
 
 
-## What's new? (Version 2.13.1)
+## What's new? (Version 2.16)
 
-• The Simplified Chinese and Japanese translations were updated.  
+• Added FFmpeg as an optional encoder for Apng.  
+• Updated the German and Russian translations.  
 
 ### Fixed:
 
-♦ When there's a project open, when closing the recorder without recording, the app would crash.  
-♦ When removing duplicated frames and not finding any frame to be removed, the app would crash.  
-♦ Issues related to the numerical input that accepts decimal values.  
-♦ Some settings were not saved after closing the app.  
-♦ Files with uppercase extension were not being recognized by the app.  
+♦ A message about a missing FFmpeg instance was not clickable. 
+♦ When loading images, if those images were not in the correct format, the app would not encode properly as apng.  
+♦ There was an issue with one of the numerical input fields not working as expected (with numbers being typed).  
 
 ### Known Bugs:
 
-♠ Cinemagraph feature does not work correctly when applying to a project with a 
-different dpi than the screen.  
+♠ Using an automated task to add the key strokes will still use the color and font settings from the main settings.  
+♠ When importing multiple images with different sizes at the same time, the app does not ask to resize all images to the same size.   
+♠ When exporting with FFmpeg, the last frame may be out of sync with the timmings of the project.  
