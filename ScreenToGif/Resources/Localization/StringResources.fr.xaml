@@ -129,12 +129,12 @@
     <s:String x:Key="Interface.Background">Arrière-plan</s:String>
     <s:String x:Key="Interface.Foreground">Premier plan</s:String>
     <s:String x:Key="Interface.BoardBackground">Arrière-plan de la planche à dessin</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme">Schéma de couleur</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.VeryLight">Très clair</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Light">Clair</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Medium">Moyen</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Dark">Sombre</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Custom">Personnalisée</s:String>
+    <s:String x:Key="Interface.Theme.Scheme">Schéma de couleur</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.VeryLight">Très clair</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Light">Clair</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Medium">Moyen</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Dark">Sombre</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Custom">Personnalisée</s:String>
     
     <s:String x:Key="Interface.EditorBackground.GridSize">Taille de la grille</s:String>
     <s:String x:Key="Interface.EditorBackground.GridSize.VerySmall">Très petit</s:String>
@@ -252,7 +252,7 @@
     <s:String x:Key="S.Upload.Imgur.Valid">Autorisation valide jusqu'au {0}.</s:String>
     <s:String x:Key="S.Upload.Imgur.Removed">Autorisation Imgur supprimée.</s:String>
     <s:String x:Key="S.Upload.Imgur.Error.AlbumLoad">Impossible de charger la liste des albums.</s:String>
-    <s:String x:Key="S.Upload.Gyfcat.Anonymous">Gfycat (Anonyme)</s:String>
+    <s:String x:Key="S.Upload.Gfycat.Anonymous">Gfycat (Anonyme)</s:String>
     <s:String x:Key="S.Upload.Yandex.Token">Jeton OAuth:</s:String>
     <s:String x:Key="S.Upload.Pick.Destination">Choisissez une destination</s:String>
     <s:String x:Key="S.Upload.Pick.Album">Choisissez un album (facultatif)</s:String>
@@ -857,7 +857,7 @@
     <s:String x:Key="IncreaseDecreaseDelay.Info">Cette valeur diminuera/augmentera la durée (délai) de chaque image sélectionnée.&#x0d;Vous pouvez décrémenter/incrémenter en sélectionnant une valeur comprise entre -10000ms et 10000ms, mais la durée finale de chaque image sera limitée à 10ms à 25500ms.</s:String>
     <s:String x:Key="ScaleDelay.Info">Ajustez la durée (délai) de chaque image sélectionnée en fonction de ce pourcentage. &#x0d; Vous pouvez mettre à l’échelle la durée de chaque image en sélectionnant une valeur comprise entre 1% et 1000%, mais la durée finale de chaque image sera limitée entre 10 ms et 25500ms.</s:String>
 
-    <s:String x:Key="Transitions.Lenght">Longueur de transition</s:String>
+    <s:String x:Key="Transitions.Length">Longueur de transition</s:String>
     <s:String x:Key="Transitions.Delay">Délai de transition</s:String>
     <s:String x:Key="Transitions.FadeTo">Fondu vers...</s:String>
     <s:String x:Key="Transitions.FadeTo.Frame">La prochaine image</s:String>

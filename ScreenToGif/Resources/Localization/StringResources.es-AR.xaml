@@ -129,12 +129,12 @@
     <s:String x:Key="Interface.Background">Fondo</s:String>
     <s:String x:Key="Interface.Foreground">Frente</s:String>
     <s:String x:Key="Interface.BoardBackground">Fondo de pizarra</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme">Esquema de colores</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.VeryLight">Muy claro</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Light">Claro</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Medium">Medio</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Dark">Oscuro</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Custom">Personalizado</s:String>
+    <s:String x:Key="Interface.Theme.Scheme">Esquema de colores</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.VeryLight">Muy claro</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Light">Claro</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Medium">Medio</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Dark">Oscuro</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Custom">Personalizado</s:String>
     
     <s:String x:Key="Interface.EditorBackground.GridSize">Tamaño de grilla</s:String>
     <s:String x:Key="Interface.EditorBackground.GridSize.VerySmall">Muy pequeño</s:String>
@@ -252,7 +252,7 @@
     <s:String x:Key="S.Upload.Imgur.Valid">Autorización válida hasta el {0}</s:String>
     <s:String x:Key="S.Upload.Imgur.Removed">Se quitó la autorización de Imgur</s:String>
     <s:String x:Key="S.Upload.Imgur.Error.AlbumLoad">No se pudo cargar la lista de álbumes</s:String>
-    <s:String x:Key="S.Upload.Gyfcat.Anonymous">Gyfcat (anónimo)</s:String>
+    <s:String x:Key="S.Upload.Gfycat.Anonymous">Gfycat (anónimo)</s:String>
     <s:String x:Key="S.Upload.Yandex.Token">Clave OAuth:</s:String>
     <s:String x:Key="S.Upload.Pick.Destination">Elegí un destino</s:String>
     <s:String x:Key="S.Upload.Pick.Album">Elegí un álbum (opcional)</s:String>
@@ -853,7 +853,7 @@
     <s:String x:Key="OverrideDelay.Info">Este nuevo valor reemplazará la duración (retraso) de todos los fotogramas seleccionados. Este valor puede ir de 10 ms a 25.500 ms.</s:String>
     <s:String x:Key="IncreaseDecreaseDelay.Info">Este valor disminuirá/aumentará la duración (retraso) de cada fotograma será restringido entre 10 ms y 25.500 ms</s:String>
     
-    <s:String x:Key="Transitions.Lenght">Longitud de la transición</s:String>
+    <s:String x:Key="Transitions.Length">Longitud de la transición</s:String>
     <s:String x:Key="Transitions.Delay">Retraso de transición</s:String>
     <s:String x:Key="Transitions.FadeTo">Desvanecer a</s:String>
     <s:String x:Key="Transitions.FadeTo.Frame">El próximo fotograma</s:String>

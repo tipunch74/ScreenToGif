@@ -129,12 +129,12 @@
     <s:String x:Key="Interface.Background">Achtergrond</s:String>
     <s:String x:Key="Interface.Foreground">Voorgrond</s:String>
     <s:String x:Key="Interface.BoardBackground">Whiteboard-achtergrond</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme">Kleurenschema</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.VeryLight">Zeer licht</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Light">Licht</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Medium">Gemiddeld</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Dark">Donker</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Custom">Aangepast</s:String>
+    <s:String x:Key="Interface.Theme.Scheme">Kleurenschema</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.VeryLight">Zeer licht</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Light">Licht</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Medium">Gemiddeld</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Dark">Donker</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Custom">Aangepast</s:String>
     
     <s:String x:Key="Interface.EditorBackground.GridSize">Rastergrootte</s:String>
     <s:String x:Key="Interface.EditorBackground.GridSize.VerySmall">Zeer klein</s:String>
@@ -252,7 +252,7 @@
     <s:String x:Key="S.Upload.Imgur.Valid">Autorisatie geldig tot {0}.</s:String>
     <s:String x:Key="S.Upload.Imgur.Removed">Imgur-autorisatie verwijderd.</s:String>
     <s:String x:Key="S.Upload.Imgur.Error.AlbumLoad">Het album kon niet worden geladen.</s:String>
-    <s:String x:Key="S.Upload.Gyfcat.Anonymous">Gyfcat (Anoniem)</s:String>
+    <s:String x:Key="S.Upload.Gfycat.Anonymous">Gfycat (Anoniem)</s:String>
     <s:String x:Key="S.Upload.Yandex.Token">OAuth token:</s:String>
     <s:String x:Key="S.Upload.Pick.Destination">Selecteer bestemming</s:String>
     <s:String x:Key="S.Upload.Pick.Album">Selecteer een album (optioneel)</s:String>
@@ -869,7 +869,7 @@
     <s:String x:Key="IncreaseDecreaseDelay.Info">Deze waarde zal de duur (vertraging) van elke geselecteerde frame toe of af laten nemen.&#10;U kunt een hogere of lagere waarde kiezen tussen -10000ms en 10000ms, maar de totale duur van elke frame is beperkt tot een waarde tussen 10ms en 25500ms.</s:String>
     <s:String x:Key="ScaleDelay.Info">De duur (vertraging) van elk geselecteerd frame procentueel verlengen.&#10;U kunt de duur van elk frame verlengen met 1-10000% , maar de uiteindelijke duur van elk frame blijft beperkt tot een waarde tussen 10ms en 25500ms</s:String>
 
-    <s:String x:Key="Transitions.Lenght">Overgangsduur</s:String>
+    <s:String x:Key="Transitions.Length">Overgangsduur</s:String>
     <s:String x:Key="Transitions.Delay">Overgangsvertraging</s:String>
     <s:String x:Key="Transitions.FadeTo">Vervagen naar…</s:String>
     <s:String x:Key="Transitions.FadeTo.Frame">Volgende frame</s:String>

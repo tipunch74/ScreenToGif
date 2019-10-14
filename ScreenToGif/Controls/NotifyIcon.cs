@@ -273,7 +273,7 @@ namespace ScreenToGif.Controls
             var owner = d as NotifyIcon;
             var value = (ImageSource)e.NewValue;
 
-            if (owner != null && !VisualHelper.IsInDesignMode())
+            if (owner != null && value != null && !VisualHelper.IsInDesignMode())
                 owner.Icon = value.ToIcon();
         }
 
@@ -441,6 +441,19 @@ namespace ScreenToGif.Controls
                 _iconData.ToolTipText = "ToolTip";
 
             VisualHelper.WriteIconData(ref _iconData, Native.NotifyCommand.Modify, Native.IconDataMembers.Tip);
+        }
+
+        public void RefreshVisual()
+        {
+            if (ContextMenu == null)
+                return;
+
+            //For some reason, the context menu of the systray icon is not updating its style.
+            ContextMenu.Background = TryFindResource("Element.Background") as SolidColorBrush;
+            ContextMenu.Foreground = TryFindResource("Element.Foreground.Medium") as SolidColorBrush;
+
+            ContextMenu.InvalidateVisual();
+            ContextMenu.UpdateLayout();
         }
 
         #endregion

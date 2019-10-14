@@ -115,12 +115,12 @@
     <s:String x:Key="Interface.Background">Tło</s:String>
     <s:String x:Key="Interface.Foreground">Pierwszy plan</s:String>
     <s:String x:Key="Interface.BoardBackground">Tło tablicy</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme">Schemat kolorów</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.VeryLight">Bardzo jasny</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Light">Jasny</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Medium">Średni</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Dark">Ciemny</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Custom">Niestandardowy...</s:String>
+    <s:String x:Key="Interface.Theme.Scheme">Schemat kolorów</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.VeryLight">Bardzo jasny</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Light">Jasny</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Medium">Średni</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Dark">Ciemny</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Custom">Niestandardowy...</s:String>
     
     <s:String x:Key="Interface.EditorBackground.GridSize">Wielkość siatki</s:String>
     <s:String x:Key="Interface.EditorBackground.GridSize.VerySmall">Bardzo mały</s:String>
@@ -238,7 +238,7 @@
     <s:String x:Key="S.Upload.Imgur.Valid">Autoryzacja ważna do: {0}.</s:String>
     <s:String x:Key="S.Upload.Imgur.Removed">Autoryzacja usunięta.</s:String>
     <s:String x:Key="S.Upload.Imgur.Error.AlbumLoad">Nie można było załadować listy albumów.</s:String>
-    <s:String x:Key="S.Upload.Gyfcat.Anonymous">Gyfcat (Anonimowo)</s:String>
+    <s:String x:Key="S.Upload.Gfycat.Anonymous">Gfycat (Anonimowo)</s:String>
     <s:String x:Key="S.Upload.Yandex.Token">Token OAuth:</s:String>
     <s:String x:Key="S.Upload.Pick.Destination">Wybierz miejsce</s:String>
     <s:String x:Key="S.Upload.Pick.Album">Wybierz album (opcjonalne)</s:String>
@@ -823,7 +823,7 @@
     <s:String x:Key="OverrideDelay.Info">Ta nowa wartość zastąpi czas trwania (opóźnienie) wszystkich wybranych klatek. Wartość może zawierać się w przedziale od 10 ms do 25500 ms.</s:String>
     <s:String x:Key="IncreaseDecreaseDelay.Info">Ta wartość zmniejszy/zwiększy czas trwania (opóźnienie) każdej wybranej klatki.&#x0d;Możesz zmniejszyć/zwiększyć poprzez wybranie wartości z przedziału od -10000ms do 10000ms, ale ostateczna długość trwania każdej klatki będzie ograniczona to przedziału od 10ms do 25500ms</s:String>
     
-    <s:String x:Key="Transitions.Lenght">Długość przejścia</s:String>
+    <s:String x:Key="Transitions.Length">Długość przejścia</s:String>
     <s:String x:Key="Transitions.Delay">Opóźnienie przejścia</s:String>
     <s:String x:Key="Transitions.FadeTo">Wygaś do...</s:String>
     <s:String x:Key="Transitions.FadeTo.Frame">Następnej klatki</s:String>

@@ -82,12 +82,12 @@
     <!--<s:String x:Key="Interface.Background">Background</s:String>-->
     <!--<s:String x:Key="Interface.Foreground">Foreground</s:String>-->
     <s:String x:Key="Interface.BoardBackground">Pano Arkaplanı</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme">Renk Düzeni</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.VeryLight">Çok Açık</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Light">Açık</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Medium">Orta</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Dark">Koyu</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Custom">Özel</s:String>
+    <s:String x:Key="Interface.Theme.Scheme">Renk Düzeni</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.VeryLight">Çok Açık</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Light">Açık</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Medium">Orta</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Dark">Koyu</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Custom">Özel</s:String>
     
     <s:String x:Key="Interface.EditorBackground.GridSize">Izgara Boyutu</s:String>
     <s:String x:Key="Interface.EditorBackground.GridSize.VerySmall">Çok Küçük</s:String>
@@ -587,7 +587,7 @@
     <!--<s:String x:Key="OverrideDelay.Info">This new value will replace the duration (delay) of all selected frames. The value can be from 10ms to 25500ms.</s:String>-->
     <!--<s:String x:Key="IncreaseDecreaseDelay.Info">This value will decrease/increase the duration (delay) of each selected frame.&#x0d;You can decrement/increment by selecting a value between -10000ms and 10000ms, but the final duration of each frame will be restricted to between 10ms and 25500ms</s:String>-->
     
-    <s:String x:Key="Transitions.Lenght">Geçiş Süresi</s:String>
+    <s:String x:Key="Transitions.Length">Geçiş Süresi</s:String>
     <s:String x:Key="Transitions.FadeTo">Geçiş yap...</s:String>
     <s:String x:Key="Transitions.FadeTo.Frame">Sonraki Kare</s:String>
     <s:String x:Key="Transitions.FadeTo.Color">Tek renk</s:String>

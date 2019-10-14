@@ -129,12 +129,12 @@
     <s:String x:Key="Interface.Background">Sfondo</s:String>
     <s:String x:Key="Interface.Foreground">Primo piano</s:String>
     <s:String x:Key="Interface.BoardBackground">Sfondo lavagna</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme">Schema di colori</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.VeryLight">Molto chiaro</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Light">Chiaro</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Medium">Medio</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Dark">Scuro</s:String>
-    <s:String x:Key="Interface.EditorBackground.Scheme.Custom">Personalizzato</s:String>
+    <s:String x:Key="Interface.Theme.Scheme">Schema di colori</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.VeryLight">Molto chiaro</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Light">Chiaro</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Medium">Medio</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Dark">Scuro</s:String>
+    <s:String x:Key="Interface.Theme.Scheme.Custom">Personalizzato</s:String>
     
     <s:String x:Key="Interface.EditorBackground.GridSize">Dimensione griglia</s:String>
     <s:String x:Key="Interface.EditorBackground.GridSize.VerySmall">Molto piccola</s:String>
@@ -252,7 +252,7 @@
     <s:String x:Key="S.Upload.Imgur.Valid">Autorizzazione valida fino {0}.</s:String>
     <s:String x:Key="S.Upload.Imgur.Removed">Autorizzazione Imgur rimossa.</s:String>
     <s:String x:Key="S.Upload.Imgur.Error.AlbumLoad">Non è stato possibile caricare la lista degli album.</s:String>
-    <s:String x:Key="S.Upload.Gyfcat.Anonymous">Gyfcat (Anonimo)</s:String>
+    <s:String x:Key="S.Upload.Gfycat.Anonymous">Gfycat (Anonimo)</s:String>
     <s:String x:Key="S.Upload.Yandex.Token">OAuth token:</s:String>
     <s:String x:Key="S.Upload.Pick.Destination">Selezionare una destinazione</s:String>
     <s:String x:Key="S.Upload.Pick.Album">Seleziona un album (opzionale)</s:String>
@@ -553,7 +553,7 @@
     <s:String x:Key="Editor.Image.Overlay">Sovrimpressione</s:String>
     <s:String x:Key="Editor.Image.FreeDrawing">Disegno&#x0a;libero</s:String>
     <s:String x:Key="Editor.Image.Shape">Forme</s:String>
-    <!--<s:String x:Key="Editor.Image.Clicks">Mouse&#x0d;Clicks</s:String>-->
+    <s:String x:Key="Editor.Image.Clicks">Clic del&#x0d;mouse</s:String>
     <s:String x:Key="Editor.Image.Watermark">Filigrana</s:String>
     <s:String x:Key="Editor.Image.Cinemagraph">Cinemagraph</s:String>
     <s:String x:Key="Editor.Image.Border">Bordo</s:String>
@@ -869,7 +869,7 @@
     <s:String x:Key="IncreaseDecreaseDelay.Info">Questo valore ridurrà/aumenterà la durata (ritardo) di ogni fotogramma selezionato.&#x0a;È possibile ridurre/aumentare selezionando un valore tra -10000ms e 10000ms, tuttavia la durata finale di ciascun fotogramma verrà forzata tra 10ms e 25500ms</s:String>
     <s:String x:Key="ScaleDelay.Info">Ridimensiona la durata (ritardo) di ciascun fotogramma selezionato per questa percentuale.&#x0d;Puoi ridimensionare la durata di ciascun fotogramma selezionando un valore compreso tra 1% e 1000%, ma la durata finale di ciascun fotogramma sarà limitata tra 10 ms e 25500 ms</s:String>
 
-    <s:String x:Key="Transitions.Lenght">Durata transizione</s:String>
+    <s:String x:Key="Transitions.Length">Durata transizione</s:String>
     <s:String x:Key="Transitions.Delay">Ritardo transizione</s:String>
     <s:String x:Key="Transitions.FadeTo">Dissolvi a...</s:String>
     <s:String x:Key="Transitions.FadeTo.Frame">Al fotogramma successivo</s:String>
@@ -892,6 +892,8 @@
     <s:String x:Key="S.SaveAs.Encoder.Legacy.Tooltip">Algoritmo: NeuQuant.</s:String>
     <s:String x:Key="S.SaveAs.Encoder.System">Sistema</s:String>
     <s:String x:Key="S.SaveAs.Encoder.System.Tooltip">Usa una tavolozza predefinita.</s:String>
+    <s:String x:Key="S.SaveAs.Encoder.Apng">1.0</s:String>
+    <s:String x:Key="S.SaveAs.Encoder.Apng.Tooltip">Codificatore creato dallo sviluppatore di ScreenToGif.</s:String>
     <s:String x:Key="S.SaveAs.Encoder.Ffmpeg">FFmpeg</s:String>
     <s:String x:Key="S.SaveAs.Encoder.Gifski">Gifski</s:String>
     <s:String x:Key="S.SaveAs.GifOptions">Opzioni gif</s:String>
